@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Startseite</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .click-image {
+      cursor: pointer;
+      width: 200px;
+      transition: transform 0.2s ease;
+    }
+
+    .click-image:hover {
+      transform: scale(1.05);
+    }
+
+    .disclaimer {
+      margin-top: 40px;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .disclaimer img {
+      width: 40px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 400px) {
+      .disclaimer {
+        font-size: 12px;
+        max-width: 90%;
+      }
+
+      .disclaimer img {
+        width: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Klick-Sound -->
+  <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
+
+  <!-- Klickbares Bild -->
+  <img src="imgs/click_here.png" alt="Click here" class="click-image" onclick="handleClick('logo.html')">
+
+  <!-- Disclaimer mit eigenem Icon -->
+  <div class="disclaimer">
+    <img src="imgs/dektopsoundicon.png" alt="Desktop Icon" />
+    <span>for the best experience, please access this website on a desktop or laptop with sound enabled.</span>
+  </div>
+
+  <script>
+    function handleClick(target) {
+      const sound = document.getElementById('clickSound');
+
+      sound.currentTime = 0;
+      const playPromise = sound.play();
+
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setTimeout(() => {
+            window.location.href = target;
+          }, 1000);
+        }).catch((err) => {
+          console.warn("Sound konnte nicht gespielt werden:", err);
+          window.location.href = target;
+        });
+      } else {
+        window.location.href = target;
+      }
+    }
+  </script>
+
+</body>
+</html>

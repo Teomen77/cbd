@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cbd</title>
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-video {
+      width: 100%;
+      max-width: 200px;
+      margin-top: 20px;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .ordner-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 60px;
+      padding: 20px;
+    }
+
+    .ordner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    width: 140px; /* feste Breite */
+    height: 150px; /* feste Höhe */
+    justify-content: flex-start;
+    }
+
+    .ordner img {
+      width: 100px;
+      height: auto;
+    }
+
+    .ordner-name {
+      margin-top: 10px;
+      font-size: 16px;
+      text-align: center;
+      word-break: break-word;
+      line-height: 1.2;
+    }
+
+    @media (max-width: 500px) {
+      .ordner img {
+        width: 70px;
+      }
+
+      .ordner-name {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Klick-Sound -->
+  <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
+
+  <!-- Video logo at the top -->
+  <div class="logo-video">
+    <video src="video/cbd.mp4" autoplay muted loop playsinline></video>
+  </div>
+
+  <!-- Folder section -->
+  <div class="ordner-container">
+    <div class="ordner" onclick="handleClick('ordner1.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 1">
+      <div class="ordner-name">full portfolio</div>
+    </div>
+    <div class="ordner" onclick="handleClick('ordner2.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 2">
+      <div class="ordner-name">women`s shelter haus, berlin</div>
+    </div>
+    <div class="ordner" onclick="handleClick('ordner3.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 3">
+      <div class="ordner-name">baulücke, hannover</div>
+    </div>
+    <div class="ordner" onclick="handleClick('ordner4.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 4">
+      <div class="ordner-name">cordes campus, bünde</div>
+    </div>
+    <div class="ordner" onclick="handleClick('ordner5.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 5">
+      <div class="ordner-name">wohnpark spradower schweiz, bünde</div>
+    </div>
+    <div class="ordner" onclick="handleClick('ordner6.html')">
+      <img src="imgs/mac_ordner.png" alt="Ordner 6">
+      <div class="ordner-name">[c]</div>
+    </div>
+  </div>
+
+  <script>
+    function handleClick(target) {
+      const sound = document.getElementById('clickSound');
+  
+      sound.currentTime = 0;
+      const playPromise = sound.play();
+  
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Warte 1 Sekunde, dann weiterleiten
+          setTimeout(() => {
+            window.location.href = target;
+          }, 1000); // oder 1100ms für Sicherheit
+        }).catch((err) => {
+          console.warn("Sound konnte nicht gespielt werden:", err);
+          window.location.href = target; // trotzdem weiterleiten
+        });
+      } else {
+        // Fallback
+        window.location.href = target;
+      }
+    }
+  </script>
+   
+</body>
+</html>

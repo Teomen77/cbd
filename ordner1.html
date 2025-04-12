@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>full portfolio</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #ffffff;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .pdf-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .pdf-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100px;
+      text-align: center;
+      text-decoration: none;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .pdf-item img {
+      width: 64px;
+      height: auto;
+    }
+
+    .pdf-name {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .apple-window-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.1);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .apple-window {
+      width: 90%;
+      max-width: 800px;
+      height: 80%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .window-header {
+      background-color: #e0e0e0;
+      padding: 8px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      position: relative;
+    }
+
+    .window-button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+    }
+
+    .red {
+      background-color: #ff5f57;
+      cursor: pointer;
+    }
+
+    .red:hover::after {
+      content: "✕";
+      color: black;
+      font-size: 10px;
+      position: absolute;
+      top: -2px;
+      left: 2px;
+    }
+
+    .yellow {
+      background-color: #ffbd2e;
+    }
+
+    .green {
+      background-color: #28c840;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex-grow: 1;
+    }
+
+    .zurueck-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      color: #000000;
+      cursor: pointer;
+      font-size: 40px;
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Klick-Sound -->
+  <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
+
+  <!-- PDF-Icons -->
+  <div class="pdf-container">
+    <div class="pdf-item" onclick="openPreview('Ordner 1/skulio.pdf')">
+      <img src="imgs/file.png" alt="PDF Skulio" />
+      <div class="pdf-name">Visuals</div>
+    </div>
+  </div>
+
+  <!-- Vorschaufenster -->
+  <div id="previewOverlay" class="apple-window-overlay">
+    <div class="apple-window">
+      <div class="window-header">
+        <span class="window-button red" onclick="closePreview()"></span>
+        <span class="window-button yellow"></span>
+        <span class="window-button green"></span>
+      </div>
+      <iframe id="pdfFrame" class="pdf-frame" src=""></iframe>
+    </div>
+  </div>
+
+  <!-- Zurück -->
+  <button class="zurueck-button" onclick="handleClick('files.html')">&lt;</button>
+
+  <script>
+    function openPreview(pdfPath) {
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        // Auf Mobilgerät: PDF in neuem Tab
+        window.open(pdfPath, '_blank');
+      } else {
+        // Auf Desktop: Vorschaufenster einblenden
+        const overlay = document.getElementById("previewOverlay");
+        const frame = document.getElementById("pdfFrame");
+        frame.src = pdfPath;
+        overlay.style.display = "flex";
+      }
+    }
+
+    function closePreview() {
+      const overlay = document.getElementById("previewOverlay");
+      const frame = document.getElementById("pdfFrame");
+      overlay.style.display = "none";
+      frame.src = "";
+    }
+
+    function handleClick(target) {
+      const sound = document.getElementById('clickSound');
+  
+      sound.currentTime = 0;
+      const playPromise = sound.play();
+  
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Warte 1 Sekunde, dann weiterleiten
+          setTimeout(() => {
+            window.location.href = target;
+          }, 1000); // oder 1100ms für Sicherheit
+        }).catch((err) => {
+          console.warn("Sound konnte nicht gespielt werden:", err);
+          window.location.href = target; // trotzdem weiterleiten
+        });
+      } else {
+        // Fallback
+        window.location.href = target;
+      }
+    }
+  </script>
+
+</body>
+</html>
