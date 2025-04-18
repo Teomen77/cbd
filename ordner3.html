@@ -1,11 +1,260 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>baulücke, hannover</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>baulücke</title>
+  <link rel="icon" href="imgs/favicon.png?v=1" type="image/png">
+  <link rel="apple-touch-icon" href="imgs/favicon.png">
+  <style>
+    @font-face {
+      font-family: 'SF Pro';
+      src: url('fonts/SF-Pro.ttf') format('truetype');
+      font-weight: 400;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'SF Pro', sans-serif;
+      background-color: #ffffff;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .pdf-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px; /* gleichmäßiger Abstand */
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+
+      .pdf-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 120px; /* feste Breite für Gleichmäßigkeit */
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        cursor: pointer;
+        word-break: break-word; /* falls lange Namen */
+      }
+
+      .pdf-item img {
+        width: 64px;
+        height: auto;
+      }
+
+      .pdf-name {
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+      .pdf-item a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none; /* entfernt Unterstreichung */
+      color: inherit; /* übernimmt die Textfarbe vom Elternteil */
+    }
+
+    .pdf-item img {
+  width: 64px;
+  height: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.pdf-item img:hover {
+  transform: scale(1.1);
+}
+
+    .apple-window-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.1);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .apple-window {
+      width: 90%;
+      max-width: 800px;
+      height: 80%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .window-header {
+      background-color: #e0e0e0;
+      padding: 8px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      position: relative;
+    }
+
+    .window-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: black;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+}
+
+.red {
+  background-color: #ff5f57;
+}
+
+.red:hover::after {
+  content: "✕";
+}
+
+    .yellow {
+      background-color: #ffbd2e;
+    }
+
+    .green {
+      background-color: #28c840;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex-grow: 1;
+    }
+
+    .zurueck-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      color: #000000;
+      cursor: pointer;
+      font-size: 40px;
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      z-index: 20;
+    }
+
+    @media (max-width: 600px) {
+  .pdf-item {
+    width: 45%;
+  }
+}
+
+@media (max-width: 400px) {
+  .pdf-item {
+    width: 100%;
+  }
+}
+  </style>
 </head>
 <body>
-    <h1>Ordner 3</h1>
+
+  <!-- Klick-Sound -->
+  <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
+
+  <!-- PDF-Icons -->
+  <div class="pdf-container">
+    <div class="pdf-item" onclick="openPreview('Ordner 3/baulücke.pdf')">
+      <img src="imgs/file.png" alt="baulücke" />
+      <div class="pdf-name">baulücke</div>
+    </div>
+
+
+  <!-- Vorschaufenster -->
+  <div id="previewOverlay" class="apple-window-overlay">
+    <div class="apple-window">
+      <div class="window-header">
+        <span class="window-button red" onclick="closePreview()"></span>
+        <span class="window-button yellow"></span>
+        <span class="window-button green"></span>
+      </div>
+      <iframe id="pdfFrame" class="pdf-frame" src=""></iframe>
+    </div>
+  </div>
+
+  <!-- Zurück -->
+  <button class="zurueck-button" onclick="handleClick('files.html')">&lt;</button>
+
+  <script>
+    // Safari-Fix: Audio einmal entsperren
+    window.addEventListener('click', () => {
+      const sound = document.getElementById('clickSound');
+      if (sound && sound.paused) {
+        sound.muted = true;
+        sound.play().then(() => {
+          sound.pause();
+          sound.currentTime = 0;
+          sound.muted = false;
+        });
+      }
+    }, { once: true });
+  
+    function playClickSound() {
+      const originalSound = document.getElementById('clickSound');
+      if (!originalSound) return;
+  
+      const clone = originalSound.cloneNode();
+      clone.volume = originalSound.volume;
+  
+      clone.addEventListener('ended', () => {
+        clone.remove();
+      });
+  
+      document.body.appendChild(clone);
+      clone.play().catch((err) => {
+        console.warn("Klicksound konnte nicht abgespielt werden:", err);
+      });
+    }
+  
+    function openPreview(pdfPath) {
+      playClickSound();
+  
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        window.open(pdfPath, '_blank');
+      } else {
+        const overlay = document.getElementById("previewOverlay");
+        const frame = document.getElementById("pdfFrame");
+        frame.src = pdfPath;
+        overlay.style.display = "flex";
+      }
+    }
+  
+    function closePreview() {
+      const overlay = document.getElementById("previewOverlay");
+      const frame = document.getElementById("pdfFrame");
+      overlay.style.display = "none";
+      frame.src = "";
+    }
+  
+    function handleClick(target) {
+      playClickSound();
+      setTimeout(() => {
+        window.location.href = target;
+      }, 1000);
+    }
+  </script>
+
 </body>
 </html>
