@@ -4,43 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>full portfolio</title>
+  <link rel="icon" href="imgs/favicon.png?v=1" type="image/png">
+  <link rel="apple-touch-icon" href="imgs/favicon.png">
   <style>
+    @font-face {
+      font-family: 'SF Pro';
+      src: url('fonts/SF-Pro.ttf') format('truetype');
+      font-weight: 400;
+    }
     body {
       margin: 0;
       padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'SF Pro', sans-serif;
       background-color: #ffffff;
       position: relative;
       min-height: 100vh;
     }
 
     .pdf-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      align-items: flex-start;
-    }
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px; /* gleichmäßiger Abstand */
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
 
-    .pdf-item {
+      .pdf-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 120px; /* feste Breite für Gleichmäßigkeit */
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        cursor: pointer;
+        word-break: break-word; /* falls lange Namen */
+      }
+
+      .pdf-item img {
+        width: 64px;
+        height: auto;
+      }
+
+      .pdf-name {
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+      .pdf-item a {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100px;
-      text-align: center;
-      text-decoration: none;
-      color: #333;
-      cursor: pointer;
+      text-decoration: none; /* entfernt Unterstreichung */
+      color: inherit; /* übernimmt die Textfarbe vom Elternteil */
     }
 
-    .pdf-item img {
-      width: 64px;
-      height: auto;
-    }
+      .pdf-item img {
+        width: 64px;
+        height: auto;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
 
-    .pdf-name {
-      margin-top: 8px;
-      font-size: 14px;
-    }
+      .pdf-item img:hover {
+        transform: scale(1.1);
+      }
 
     .apple-window-overlay {
       position: fixed;
@@ -81,23 +109,22 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      display: inline-block;
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: black;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
     }
 
     .red {
       background-color: #ff5f57;
-      cursor: pointer;
     }
 
-    .red:hover::after {
-      content: "✕";
-      color: black;
-      font-size: 10px;
-      position: absolute;
-      top: -2px;
-      left: 2px;
-    }
+.red:hover::after {
+  content: "✕";
+}
 
     .yellow {
       background-color: #ffbd2e;
@@ -127,6 +154,18 @@
       line-height: 1;
       z-index: 20;
     }
+
+    @media (max-width: 600px) {
+  .pdf-item {
+    width: 45%;
+  }
+}
+
+@media (max-width: 400px) {
+  .pdf-item {
+    width: 100%;
+  }
+}
   </style>
 </head>
 <body>
@@ -136,11 +175,11 @@
 
   <!-- PDF-Icons -->
   <div class="pdf-container">
-    <div class="pdf-item" onclick="openPreview('Ordner 1/skulio.pdf')">
-      <img src="imgs/file.png" alt="PDF Skulio" />
-      <div class="pdf-name">Visuals</div>
+    <div class="pdf-item" onclick="openPreview('Ordner 1/Portfolio.Bakir.2025.pdf')">
+      <img src="imgs/file.png" alt="portfolio" />
+      <div class="pdf-name">portfolio</div>
     </div>
-  </div>
+
 
   <!-- Vorschaufenster -->
   <div id="previewOverlay" class="apple-window-overlay">
@@ -158,48 +197,68 @@
   <button class="zurueck-button" onclick="handleClick('files.html')">&lt;</button>
 
   <script>
-    function openPreview(pdfPath) {
-      const isMobile = window.innerWidth <= 768;
 
+    
+    // Safari-Unlock: Aktiviert Sound bei erstem echten Klick
+    window.addEventListener('click', () => {
+      const sound = document.getElementById('clickSound');
+      if (sound && sound.paused) {
+        sound.muted = true;
+        sound.play().then(() => {
+          sound.pause();
+          sound.currentTime = 0;
+          sound.muted = false;
+        });
+      }
+    }, { once: true });
+  
+    function playClickSound() {
+      const originalSound = document.getElementById('clickSound');
+      if (!originalSound) return;
+  
+      // Klone Sound, um Delay bei Mehrfachklicks zu vermeiden
+      const clone = originalSound.cloneNode();
+      clone.volume = originalSound.volume;
+  
+      // Optional: auto-remove, damit Speicher nicht überläuft
+      clone.addEventListener('ended', () => {
+        clone.remove();
+      });
+  
+      document.body.appendChild(clone);
+      clone.play().catch((err) => {
+        console.warn("Klicksound konnte nicht abgespielt werden:", err);
+      });
+    }
+  
+    function openPreview(pdfPath) {
+      playClickSound();
+  
+      const isMobile = window.innerWidth <= 768;
+  
       if (isMobile) {
-        // Auf Mobilgerät: PDF in neuem Tab
         window.open(pdfPath, '_blank');
       } else {
-        // Auf Desktop: Vorschaufenster einblenden
         const overlay = document.getElementById("previewOverlay");
         const frame = document.getElementById("pdfFrame");
         frame.src = pdfPath;
         overlay.style.display = "flex";
       }
     }
-
+  
     function closePreview() {
       const overlay = document.getElementById("previewOverlay");
       const frame = document.getElementById("pdfFrame");
       overlay.style.display = "none";
       frame.src = "";
     }
-
+  
     function handleClick(target) {
-      const sound = document.getElementById('clickSound');
+      playClickSound();
   
-      sound.currentTime = 0;
-      const playPromise = sound.play();
-  
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          // Warte 1 Sekunde, dann weiterleiten
-          setTimeout(() => {
-            window.location.href = target;
-          }, 1000); // oder 1100ms für Sicherheit
-        }).catch((err) => {
-          console.warn("Sound konnte nicht gespielt werden:", err);
-          window.location.href = target; // trotzdem weiterleiten
-        });
-      } else {
-        // Fallback
+      setTimeout(() => {
         window.location.href = target;
-      }
+      }, 1000);
     }
   </script>
 
