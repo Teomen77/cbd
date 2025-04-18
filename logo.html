@@ -1,71 +1,74 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startseite</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            background-color: #ffff;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logo</title>
+  <link rel="icon" href="imgs/favicon.png?v=1" type="image/png">
+  <link rel="apple-touch-icon" href="imgs/favicon.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-        .video-container {
-            width: 90%;
-            max-width: 400px;
-        }
+    video {
+      width: 90%;
+      max-width: 400px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
 
-        .video-container video {
-            width: 100%;
-            height: auto;
-            display: block;
-            cursor: pointer;
-        }
-    </style>
+    video:hover {
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 <body>
-    <!-- Klick-Sound -->
-    <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
 
-    <!-- Hintergrundmusik -->
-    <embed 
-  src="music/bg_music.mp3" 
-  autostart="true" 
-  loop="true" 
-  hidden
->
-  
+  <!-- Hintergrundmusik -->
+  <audio id="bgMusic" src="music/bg_music.mp3" preload="auto" loop></audio>
 
-    <!-- Klickbares Video-Logo -->
-    <a class="video-container" onclick="handleClick('files.html')">
-        <video src="video/cbd.mp4" autoplay muted loop playsinline></video>
-    </a>
+  <!-- Klick-Sound -->
+  <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
 
-    <script>
-        function handleClick(target) {
-          const sound = document.getElementById('clickSound');
-    
-          sound.currentTime = 0;
-          const playPromise = sound.play();
-    
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              setTimeout(() => {
-                window.location.href = target;
-              }, 1000);
-            }).catch((err) => {
-              console.warn("Sound konnte nicht gespielt werden:", err);
-              window.location.href = target;
-            });
-          } else {
-            window.location.href = target;
-          }
-        }
-      </script>
+  <!-- Klickbares Video -->
+  <video id="logoVideo" src="video/cbd.mp4" autoplay muted loop playsinline></video>
+
+  <script>
+    const bgMusic = document.getElementById("bgMusic");
+    const clickSound = document.getElementById("clickSound");
+    const logoVideo = document.getElementById("logoVideo");
+
+    // Musik nur starten, wenn vorher freigegeben
+    if (localStorage.getItem("allowMusic") === "true") {
+      bgMusic.play().catch(err => {
+        console.warn("Musik konnte nicht abgespielt werden:", err);
+      });
+    }
+
+    // Beim Klick auf das Video:
+    logoVideo.addEventListener("click", () => {
+      // 1. Hintergrundmusik stoppen
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+      localStorage.removeItem("allowMusic");
+
+      // 2. Klick-Sound abspielen
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+
+      // 3. Weiterleiten
+      setTimeout(() => {
+        window.location.href = "files.html";
+      }, 1000);
+    });
+  </script>
+
 </body>
 </html>

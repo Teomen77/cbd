@@ -4,72 +4,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>cbd</title>
-  <style>
-    body {
-      background-color: #ffffff;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .logo-video {
-      width: 100%;
-      max-width: 200px;
-      margin-top: 20px;
-    }
-
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .ordner-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 60px;
-      padding: 20px;
-    }
-
-    .ordner {
+  <link rel="icon" href="imgs/favicon.png?v=1" type="image/png">
+  <link rel="apple-touch-icon" href="imgs/favicon.png">
+<style>
+  @font-face {
+    font-family: 'SF Pro';
+    src: url('fonts/SF-Pro.ttf') format('truetype');
+    font-weight: 400;
+  }
+  
+  body {
+    background-color: #ffffff;
+    font-family: 'SF Pro', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Logo video */
+  .logo-video {
+    width: 100%;
+    max-width: 200px;
+    margin-top: 20px;
+  }
+  
+  video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .hoverable-video {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .hoverable-video:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Folder grid */
+  .ordner-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 60px;
+    padding: 20px;
+  }
+  
+  .ordner {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    width: 140px; /* feste Breite */
-    height: 150px; /* feste Höhe */
-    justify-content: flex-start;
-    }
+    width: 140px;
+    padding: 20px 10px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    background-color: transparent;
+    border-radius: 12px;
+  }
 
+  
+  /* Only image grows on hover */
+  .ordner img {
+    width: 100px;
+    height: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .ordner:hover img {
+  transform: scale(1.1);
+}
+  
+  /* Folder name */
+  .ordner-name {
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
+    word-break: break-word;
+    line-height: 1.2;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 500px) {
     .ordner img {
-      width: 100px;
-      height: auto;
+      width: 70px;
     }
-
+  
     .ordner-name {
-      margin-top: 10px;
-      font-size: 16px;
-      text-align: center;
-      word-break: break-word;
-      line-height: 1.2;
+      font-size: 14px;
     }
-
-    @media (max-width: 500px) {
-      .ordner img {
-        width: 70px;
-      }
-
-      .ordner-name {
-        font-size: 14px;
-      }
-    }
+  }
   </style>
 </head>
 <body>
@@ -78,8 +110,8 @@
   <audio id="clickSound" src="music/mouse_click.mp3" preload="auto"></audio>
 
   <!-- Video logo at the top -->
-  <div class="logo-video">
-    <video src="video/cbd.mp4" autoplay muted loop playsinline></video>
+  <div class="logo-video" onclick="goBackToLogo()">
+    <video class="hoverable-video" src="video/cbd.mp4" autoplay muted loop playsinline></video>
   </div>
 
   <!-- Folder section -->
@@ -90,7 +122,7 @@
     </div>
     <div class="ordner" onclick="handleClick('ordner2.html')">
       <img src="imgs/mac_ordner.png" alt="Ordner 2">
-      <div class="ordner-name">women`s shelter haus, berlin</div>
+      <div class="ordner-name">women`s shelter house, berlin</div>
     </div>
     <div class="ordner" onclick="handleClick('ordner3.html')">
       <img src="imgs/mac_ordner.png" alt="Ordner 3">
@@ -132,6 +164,21 @@
         window.location.href = target;
       }
     }
+
+    function goBackToLogo() {
+  // Musik-Erlaubnis setzen
+  localStorage.setItem("allowMusic", "true");
+
+  // Optional: Klick-Sound abspielen
+  const sound = document.getElementById('clickSound');
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+
+  // Leite zurück
+  setTimeout(() => {
+    window.location.href = "logo.html";
+  }, 1000);
+}
   </script>
    
 </body>
