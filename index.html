@@ -38,6 +38,25 @@
       line-height: 1.4;
     }
 
+    .credits {
+  position: absolute;
+  bottom: 20px;
+  font-size: 14px;
+  color: #888;
+  font-family: 'SF Pro', sans-serif;
+}
+
+.credits a {
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.credits a:hover {
+  color: #000;
+}
+
   </style>
 </head>
 <body>
@@ -49,7 +68,7 @@
   <audio id="bgMusic" src="music/bg_music.mp3" preload="auto" loop></audio>
 
   <!-- Klickbares Bild oder Video -->
-  <img src="imgs/click_here.png" id="clickArea" class="click-area" alt="Start">
+  <img src="/imgs/click_here.png" id="clickArea" class="click-area" alt="Start">
 
   <div class="disclaimer">
     <img src="imgs/dektopsoundicon.png" alt="Icon" width="40" /><br />
@@ -75,6 +94,11 @@
     }, 1000);
   });
   </script>
+
+<footer class="credits">
+  designed by <a href="https://instagram.com/ciyaba" target="_blank">@ciya</a> —
+  developed by <a href="https://instagram.com/teokse_" target="_blank">@teo</a>
+</footer>
 
 </body>
 </html>
